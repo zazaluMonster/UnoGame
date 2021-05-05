@@ -11,10 +11,10 @@ import java.util.ArrayList;
  * method can allow us to get the array length.
  */
 public class Hand {
-    private ArrayList<Card> cards = new ArrayList<>();
+    private CardArray cards = new CardArray();
 
     public int getLength() {
-        return cards.size();
+        return cards.getLength();
     }
 
     public void addCard(Card card) {
@@ -31,7 +31,7 @@ public class Hand {
         return cards.get(index);
     }
 
-    public ArrayList<Card> getCards() {
+    public CardArray getCards() {
         return cards;
     }
 

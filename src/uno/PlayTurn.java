@@ -1,8 +1,5 @@
 package uno;
 
-
-import java.util.ArrayList;
-
 /**
  * The purpose of this class is to make each turn of the game.There is a Hand
  * object which contain each player’s cards in hand. There are userInsert method
@@ -64,11 +61,11 @@ public class PlayTurn {
     /**
      * toCheck method to make sure the card fix condition
      */
-    public boolean toCheckAll(ArrayList<Card> allCards){
+    public boolean toCheckAll(CardArray allCards){
         if(allCards == null){
             return false;
         }else{
-            for (int i = 0; i < allCards.size(); i++) {
+            for (int i = 0; i < allCards.getLength(); i++) {
                 if(allCards.get(i).isFunction()){
                     return true;
                 }
