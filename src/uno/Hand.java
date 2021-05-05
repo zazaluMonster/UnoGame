@@ -11,39 +11,43 @@ import java.util.ArrayList;
  * method can allow us to get the array length.
  */
 public class Hand {
-    private ArrayList<Card> arrayList = new ArrayList<>();
-    int next;//the player's next card num
-
-    public Hand() {
-    }
-
-    @Override
-    public String toString() {
-        return "Hand{" +
-                "arrayList=" + arrayList +
-                ", next=" + next +
-                '}';
-    }
+    private ArrayList<Card> cards = new ArrayList<>();
 
     public int getLength() {
-        return arrayList.size();
+        return cards.size();
     }
 
     public void addCard(Card card) {
-        arrayList.add(card);
+        cards.add(card);
     }
 
     public Card delCard(int index) {
-        Card card = arrayList.get(index);
-        arrayList.remove(index);
+        Card card = cards.get(index);
+        cards.remove(index);
         return card;
     }
 
     public Card getCard(int index) {
-        return arrayList.get(index);
+        return cards.get(index);
     }
 
     public ArrayList<Card> getCards() {
-        return arrayList;
+        return cards;
+    }
+
+    //show all players cards
+    public void showAllCards(int nextTurnPlayer){
+        System.out.println("Now player " + nextTurnPlayer + "'s cards:");
+        for (int i = 0; i < this.getLength(); i++) {
+            System.out.print(this.getCard(i).toString() + ", ");
+        }
+        System.out.println("");
+    }
+
+    //There's only one card left. Shout UNO
+    public void checkUno(int nextTurnPlayer){
+        if(this.getLength() == 1){
+            System.out.println("player " + nextTurnPlayer + " UNO!");
+        }
     }
 }

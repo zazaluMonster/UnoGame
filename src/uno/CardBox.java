@@ -9,11 +9,12 @@ import java.util.Random;
  *  There are 84 cards in all.
  *  normal card(0-9): 76
  *  function card(skip) : 8
- *  total: 88 cards.
+ *  total: 84 cards.
  */
 public class CardBox {
     ArrayList<Card> arrayList = new ArrayList<>();
     Random random = new Random();
+    static int SKIP = -1;//function skip card value
 
     public void init(){
         productionCard(false, 0);
@@ -35,8 +36,8 @@ public class CardBox {
         productionCard(false, 8);
         productionCard(false, 9);
         productionCard(false, 9);
-        productionCard(true, -1);
-        productionCard(true, -1);
+        productionCard(true, CardBox.SKIP);
+        productionCard(true, CardBox.SKIP);
     }
 
     public void productionCard(boolean isFunction, int num){
@@ -50,9 +51,8 @@ public class CardBox {
         arrayList.add(green);
     }
 
-    public Card getRandomCard(){
+    public Card drawCard(){
         if(arrayList.size() <= 0){//If the card is used up, add new cards
-            Log.info("牌用完了，重新塞");
             init();
         }
 
@@ -60,5 +60,20 @@ public class CardBox {
         Card card = arrayList.get(index);
         arrayList.remove(index);
         return card;
+    }
+
+    //player and deal cards to them, 7 cards for each
+    public Hand[] dealCardsToPlayers(int playerCount, int beginningCardsCount){
+        Hand[] players = new Hand[playerCount];
+        for (int j = 0; j < playerCount; j++) {
+            players[j] = new Hand();
+            System.out.println("player "+(j+1) + "'s cards:");
+            for (int i = 0; i < beginningCardsCount; i++) {
+                players[j].addCard(this.drawCard());
+                System.out.print(players[j].getCard(i).toString() + ", ");
+            }
+            System.out.println("");
+        }
+        return players;
     }
 }

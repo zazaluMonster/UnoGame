@@ -12,8 +12,8 @@ import java.util.ArrayList;
 public class PlayTurn {
     int lastTurnPlayer;
     int nextTurnPlayer;
-    Card lastCard;
     int totalPlayers;
+    Card lastCard;
     Hand[] players;
 
     public void init(int startPlayerNum, int totalPlayers, Hand[] players){
@@ -31,39 +31,47 @@ public class PlayTurn {
         lastTurnPlayer = nextTurnPlayer;
         if(card!= null){//有牌打出去才记录
             lastCard = card;
-            if(card.isFunction()){//skip
-                nextTurnPlayer = (nextTurnPlayer+2) > totalPlayers ? ((nextTurnPlayer+2) % totalPlayers) : (nextTurnPlayer+2);
-            }else{
-                nextTurnPlayer = (nextTurnPlayer+1) > totalPlayers ? 1 : (nextTurnPlayer+1);
+            if(card.isFunction()){
+                card.skipFunction(nextTurnPlayer);
             }
-        }else{
-            nextTurnPlayer = (nextTurnPlayer+1) > totalPlayers ? 1 : (nextTurnPlayer+1);
         }
-
+        nextTurnPlayer = (nextTurnPlayer+1) > totalPlayers ? 1 : (nextTurnPlayer+1);
     }
 
     /**
-     * toCheck method to make sure the card player draw is valid.
+     * toCheck method to make sure the card fix condition
      */
     public boolean toCheck(Card nextCard){
         if(lastCard != null){
-            if(lastCard.getColor().equals(nextCard.getColor()) || lastCard.getValue() == nextCard.getValue()){
-                return true;
+            if(nextCard.isFunction()){//function card check color only
+                if(lastCard.getColor().equals(nextCard.getColor())){
+                    return true;
+                }else{
+                    return false;
+                }
             }else{
-                return false;
+                if(lastCard.getColor().equals(nextCard.getColor()) || lastCard.getValue() == nextCard.getValue()){
+                    return true;
+                }else{
+                    return false;
+                }
             }
+
         }
         return true;
     }
 
     /**
-     * toCheck method to make sure the card player draw is valid.
+     * toCheck method to make sure the card fix condition
      */
     public boolean toCheckAll(ArrayList<Card> allCards){
         if(allCards == null){
             return false;
         }else{
             for (int i = 0; i < allCards.size(); i++) {
+                if(allCards.get(i).isFunction()){
+                    return true;
+                }
                 if(toCheck(allCards.get(i))){
                     return true;
                 }
@@ -78,19 +86,7 @@ public class PlayTurn {
                 ", Next player: player " + nextTurnPlayer + ", Last Card: " + lastCard.toString();
     }
 
-    public int getLastTurnPlayer() {
-        return lastTurnPlayer;
-    }
-
     public int getNextTurnPlayer() {
         return nextTurnPlayer;
-    }
-
-    public Card getLastCard() {
-        return lastCard;
-    }
-
-    public Hand[] getPlayers() {
-        return players;
     }
 }

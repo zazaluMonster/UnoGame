@@ -1,7 +1,5 @@
 package uno;
 
-import java.util.Random;
-
 /**
  * The purpose of this class is to represent a single card. One card includes one value
  * and one number (not include the skip function card) and a random field to make the
@@ -20,10 +18,6 @@ public class Card {
         this.isFunction = isFunction;
     }
 
-    public boolean isFunction() {
-        return isFunction;
-    }
-
     public int getValue() {
         return value;
     }
@@ -32,16 +26,26 @@ public class Card {
         return color;
     }
 
-    //Initial random card
-    public void draw(){
+    public Card draw(CardBox cardBox){
+        return cardBox.drawCard();
     }
 
-    public void skipFunction(){
-
+    public void skipFunction(int nextTurnPlayer){
+        System.out.println("Player "+nextTurnPlayer+" use skip cards, skip this turn");
     }
 
     @Override
     public String toString() {
-        return color + " " + value;
+        if(CardBox.SKIP == value){
+            return color + " skip";
+        }else{
+            return color + " " + value;
+        }
+    }
+
+
+
+    public boolean isFunction() {
+        return isFunction;
     }
 }

@@ -8,41 +8,31 @@ import java.util.Scanner;
  * Also, the sentence display before and after the game, make the game more complete.
  */
 public class UnoApplication {
-
     public static void main(String[] args){
-        int playerCount = 3;
-        int beginningCardsCount = 7;
         int firstPlayer = 1;
         boolean isGameOver = false;
+        int beginningCardsCount = 7;
+        int playerCount = 3;
         Scanner input=new Scanner(System.in);
 
         System.out.println("Welcome to Uno!");
         System.out.println("We have " + playerCount + " players in this game!");
         System.out.println("Now Let's Start!");
 
-        //Initial card-box(Storing cards)
+        //Initial
+        //Card-box(Storing cards)
         CardBox cardBox = new CardBox();
         cardBox.init();
 
-        //Initial player and deal cards to them, 7 cards for each
-        Hand[] players = new Hand[playerCount];
-        for (int j = 0; j < playerCount; j++) {
-            players[j] = new Hand();
-            System.out.println("player "+(j+1) + "'s cards:");
-            for (int i = 0; i < beginningCardsCount; i++) {
-                players[j].addCard(cardBox.getRandomCard());
-                System.out.print(players[j].getCard(i).toString() + ", ");
-            }
-            System.out.println("");
-        }
+        //Players
+        Hand[] players = cardBox.dealCardsToPlayers(playerCount,beginningCardsCount);
 
-        //Initial PlayTurn
+        //PlayTurn
         PlayTurn playTurn = new PlayTurn();
         playTurn.init(firstPlayer, playerCount, players);
 
-        //start game
+        //start game(A while cycle represents a player turn)
         while(!isGameOver){
-            //player choose card
             int nextTurnPlayer = playTurn.getNextTurnPlayer();
             if(nextTurnPlayer <= 0 || nextTurnPlayer > players.length ){
                 System.out.println("Abnormal number of players, pleas try again!");
@@ -52,7 +42,7 @@ public class UnoApplication {
             System.out.println("player "+nextTurnPlayer+"'s turn");
             Hand curPlayer = players[nextTurnPlayer - 1];
 
-            //检查玩家是否有牌可出, 有牌可出让玩家选择出哪张, 无牌可出就抽牌
+            //Check whether players have cards to play, if yes, draw a card. if no,choose card
             if(playTurn.toCheckAll(curPlayer.getCards())){
                 System.out.print("please choose the card to play: ");
                 int n = input.nextInt();
@@ -63,29 +53,20 @@ public class UnoApplication {
                 Card curCard = players[nextTurnPlayer - 1].getCard(n-1);
                 System.out.println(curCard);
 
-                //检查出的牌是否符合规则
-                if(playTurn.toCheck(curCard)){
+                //Check whether the card fix the condition, if yes, play this card and Check whether it meets the requirements of the end of the game. if no, request play again
+                if(playTurn.toCheck(curCard) || curCard.isFunction()){
                     playTurn.userInsert(players[nextTurnPlayer - 1].delCard(n-1));
-                    if(curPlayer.getLength() <= 0){//牌已出完
+                    if(curPlayer.getLength() <= 0){
                         System.out.println("player " + nextTurnPlayer + " won :)!");
                         boolean inputError = true;
                         while(inputError){
                             System.out.print("Do you guys want to continue?(yes or no): ");
                             String isContinue = input.next();
-                            if("yes".equals(isContinue)){//继续玩
-                                players = new Hand[playerCount];
-                                for (int j = 0; j < playerCount; j++) {
-                                    players[j] = new Hand();
-                                    System.out.println("player "+(j+1) + "'s cards:");
-                                    for (int i = 0; i < beginningCardsCount; i++) {
-                                        players[j].addCard(cardBox.getRandomCard());
-                                        System.out.print(players[j].getCard(i).toString() + ", ");
-                                    }
-                                    System.out.println("");
-                                }
+                            if("yes".equals(isContinue)){//restart
+                                players = cardBox.dealCardsToPlayers(playerCount,beginningCardsCount);
                                 playTurn.init(firstPlayer, playerCount, players);
                                 inputError = false;
-                            }else if("no".equals(isContinue)){//结束游戏
+                            }else if("no".equals(isContinue)){//gameover
                                 isGameOver = true;
                                 inputError = false;
                             }else{
@@ -93,25 +74,17 @@ public class UnoApplication {
                             }
                         }
                     }else{
-                        System.out.println("Now player " + nextTurnPlayer + "'s cards:");
-                        for (int i = 0; i < curPlayer.getLength(); i++) {
-                            System.out.print(curPlayer.getCard(i).toString() + ", ");
-                        }
-                        System.out.println("");
-
-                        //只剩最后一张牌, 喊出uno
-                        if(curPlayer.getLength() == 1){
-                            System.out.println("player " + nextTurnPlayer + " UNO!");
-                        }
+                        curPlayer.showAllCards(nextTurnPlayer);
+                        curPlayer.checkUno(nextTurnPlayer);
                     }
                 }else{
                     System.out.println("the card is not fix to condition, please try again.");
                 }
             }else{
-                //无牌可出 抽牌
-                Card card = cardBox.getRandomCard();
+                Card card = cardBox.drawCard();
                 System.out.println("player " + nextTurnPlayer + " has no cards to play, draw a card: " + card);
-                if(playTurn.toCheck(card)){//刚抽到的牌符合要求, 询问玩家是否保留还是打出
+                //Check whether the card fix the condition, if yes, Ask the player whether to play it out.
+                if(playTurn.toCheck(card)){
                     boolean inputError = true;
                     while(inputError){
                         System.out.print("Do you want to play this card?(yes or no): ");
@@ -131,16 +104,10 @@ public class UnoApplication {
                     curPlayer.addCard(card);
                     playTurn.userInsert(null);
                 }
-                //展示手牌
-                System.out.println("Now player " + nextTurnPlayer + "'s cards:");
-                for (int i = 0; i < curPlayer.getLength(); i++) {
-                    System.out.print(curPlayer.getCard(i).toString() + ", ");
-                }
-                System.out.println("");
+                curPlayer.showAllCards(nextTurnPlayer);
             }
         }
 
         System.out.println("Game Over.");
-
     }
 }
