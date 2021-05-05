@@ -1,6 +1,5 @@
 package uno;
 
-import java.util.ArrayList;
 
 /**
  * The purpose of this class is to get the player’s card and store the players’ cards separately,
