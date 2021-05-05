@@ -84,7 +84,7 @@ public class UnoApplication {
                 Card card = cardBox.drawCard();
                 System.out.println("player " + nextTurnPlayer + " has no cards to play, draw a card: " + card);
                 //Check whether the card fix the condition, if yes, Ask the player whether to play it out.
-                if(playTurn.toCheck(card)){
+                if(playTurn.toCheck(card)  || card.isFunction()){
                     boolean inputError = true;
                     while(inputError){
                         System.out.print("Do you want to play this card?(yes or no): ");

@@ -1,6 +1,5 @@
 package uno;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -12,7 +11,7 @@ import java.util.Random;
  *  total: 84 cards.
  */
 public class CardBox {
-    ArrayList<Card> arrayList = new ArrayList<>();
+    CardArray cards = new CardArray();
     Random random = new Random();
     static int SKIP = -1;//function skip card value
 
@@ -45,20 +44,20 @@ public class CardBox {
         Card yellow = new Card(num, "yellow", isFunction);
         Card blue = new Card(num, "blue", isFunction);
         Card green = new Card(num, "green", isFunction);
-        arrayList.add(red);
-        arrayList.add(yellow);
-        arrayList.add(blue);
-        arrayList.add(green);
+        cards.add(red);
+        cards.add(yellow);
+        cards.add(blue);
+        cards.add(green);
     }
 
     public Card drawCard(){
-        if(arrayList.size() <= 0){//If the card is used up, add new cards
+        if(cards.getLength() <= 0){//If the card is used up, add new cards
             init();
         }
 
-        int index = random.nextInt(arrayList.size());
-        Card card = arrayList.get(index);
-        arrayList.remove(index);
+        int index = random.nextInt(cards.getLength());
+        Card card = cards.get(index);
+        cards.remove(index);
         return card;
     }
 
