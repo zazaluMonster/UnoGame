@@ -40,7 +40,10 @@ public class UnoApplication {
             }
 
             System.out.println("player "+nextTurnPlayer+"'s turn");
+
             Hand curPlayer = players[nextTurnPlayer - 1];
+
+            curPlayer.showAllCards(nextTurnPlayer);
 
             //Check whether players have cards to play, if yes, draw a card. if no,choose card
             if(playTurn.toCheckAll(curPlayer.getCards())){
